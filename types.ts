@@ -32,6 +32,7 @@ export type CartItem = {
   lineTotal: Money;
   name: Scalars['String'];
   quantity: Scalars['Int'];
+  unitTotal: Money;
 };
 
 export { Currency };
@@ -157,6 +158,7 @@ export type CartItemResolvers<ContextType = any, ParentType extends ResolversPar
   lineTotal?: Resolver<ResolversTypes['Money'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   quantity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  unitTotal?: Resolver<ResolversTypes['Money'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

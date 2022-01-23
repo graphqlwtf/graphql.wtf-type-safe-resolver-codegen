@@ -19,6 +19,7 @@ export const schema = /* GraphQL */ `
     id: ID!
     name: String!
     quantity: Int!
+    unitTotal: Money!
     lineTotal: Money!
   }
 
@@ -102,6 +103,16 @@ const resolvers: Resolvers = {
   },
   CartItem: {
     id: (item) => item._id,
+    unitTotal: (item) => {
+      const amount = item.price;
+
+      return {
+        amount,
+        formatted: currencyFormatter.format(amount / 100, {
+          code: item.currency,
+        }),
+      };
+    },
     lineTotal: (item) => {
       const amount = item.quantity * item.price;
 
