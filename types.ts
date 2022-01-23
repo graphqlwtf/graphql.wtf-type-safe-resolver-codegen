@@ -20,7 +20,6 @@ export type Scalars = {
 
 export type Cart = {
   __typename?: 'Cart';
-  currency: Currency;
   id: Scalars['ID'];
   items: Array<CartItem>;
   subTotal: Money;
@@ -29,6 +28,8 @@ export type Cart = {
 
 export type CartItem = {
   __typename?: 'CartItem';
+  id: Scalars['ID'];
+  lineTotal: Money;
   name: Scalars['String'];
   quantity: Scalars['Int'];
 };
@@ -51,8 +52,7 @@ export type QueryCartArgs = {
   id: Scalars['ID'];
 };
 
-export type WithIndex<TObject> = TObject & Record<string, any>;
-export type ResolversObject<TObject> = WithIndex<TObject>;
+
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
@@ -120,7 +120,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 ) => TResult | Promise<TResult>;
 
 /** Mapping between all available schema types and the resolvers types */
-export type ResolversTypes = ResolversObject<{
+export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Cart: ResolverTypeWrapper<CartModel>;
   CartItem: ResolverTypeWrapper<CartItemModel>;
@@ -130,10 +130,10 @@ export type ResolversTypes = ResolversObject<{
   Money: ResolverTypeWrapper<Money>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
-}>;
+};
 
 /** Mapping between all available schema types and the resolvers parents */
-export type ResolversParentTypes = ResolversObject<{
+export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   Cart: CartModel;
   CartItem: CartItemModel;
@@ -142,40 +142,41 @@ export type ResolversParentTypes = ResolversObject<{
   Money: Money;
   Query: {};
   String: Scalars['String'];
-}>;
+};
 
-export type CartResolvers<ContextType = any, ParentType extends ResolversParentTypes['Cart'] = ResolversParentTypes['Cart']> = ResolversObject<{
-  currency?: Resolver<ResolversTypes['Currency'], ParentType, ContextType>;
+export type CartResolvers<ContextType = any, ParentType extends ResolversParentTypes['Cart'] = ResolversParentTypes['Cart']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   items?: Resolver<Array<ResolversTypes['CartItem']>, ParentType, ContextType>;
   subTotal?: Resolver<ResolversTypes['Money'], ParentType, ContextType>;
   totalItems?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
+};
 
-export type CartItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['CartItem'] = ResolversParentTypes['CartItem']> = ResolversObject<{
+export type CartItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['CartItem'] = ResolversParentTypes['CartItem']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  lineTotal?: Resolver<ResolversTypes['Money'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   quantity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
+};
 
 export type CurrencyResolvers = EnumResolverSignature<{ GBP?: any, TRY?: any, USD?: any }, ResolversTypes['Currency']>;
 
-export type MoneyResolvers<ContextType = any, ParentType extends ResolversParentTypes['Money'] = ResolversParentTypes['Money']> = ResolversObject<{
+export type MoneyResolvers<ContextType = any, ParentType extends ResolversParentTypes['Money'] = ResolversParentTypes['Money']> = {
   amount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   formatted?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
+};
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   cart?: Resolver<ResolversTypes['Cart'], ParentType, ContextType, RequireFields<QueryCartArgs, 'id'>>;
-}>;
+};
 
-export type Resolvers<ContextType = any> = ResolversObject<{
+export type Resolvers<ContextType = any> = {
   Cart?: CartResolvers<ContextType>;
   CartItem?: CartItemResolvers<ContextType>;
   Currency?: CurrencyResolvers;
   Money?: MoneyResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-}>;
+};
 

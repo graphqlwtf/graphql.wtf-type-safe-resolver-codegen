@@ -13,12 +13,13 @@ export const schema = /* GraphQL */ `
     totalItems: Int!
     items: [CartItem!]!
     subTotal: Money!
-    currency: Currency!
   }
 
   type CartItem {
+    id: ID!
     name: String!
     quantity: Int!
+    lineTotal: Money!
   }
 
   type Money {
@@ -49,12 +50,29 @@ export type CartItemModel = {
   _id: string;
   name: string;
   quantity: number;
+  currency: CurrencyCode;
+  price: number;
 };
 
 const CARTS: CartModel[] = [
   {
     _id: "wtf",
-    items: [],
+    items: [
+      {
+        _id: "1",
+        name: "T-Shirt",
+        quantity: 3,
+        price: 1000,
+        currency: CurrencyCode.USD,
+      },
+      {
+        _id: "2",
+        name: "Stickers",
+        quantity: 1,
+        price: 500,
+        currency: CurrencyCode.USD,
+      },
+    ],
     currency: CurrencyCode.USD,
   },
 ];
@@ -69,12 +87,28 @@ const resolvers: Resolvers = {
     id: (cart) => cart._id,
     totalItems: (cart) => cart.items.length,
     subTotal: (cart) => {
-      const amount = cart.items.reduce((acc, item) => acc + item.quantity, 0);
+      const amount = cart.items.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
 
       return {
         amount,
         formatted: currencyFormatter.format(amount / 100, {
           code: cart.currency,
+        }),
+      };
+    },
+  },
+  CartItem: {
+    id: (item) => item._id,
+    lineTotal: (item) => {
+      const amount = item.quantity * item.price;
+
+      return {
+        amount,
+        formatted: currencyFormatter.format(amount / 100, {
+          code: item.currency,
         }),
       };
     },
