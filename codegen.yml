@@ -1,4 +1,4 @@
-schema: index.ts
+schema: schema.graphql
 generates:
   types.ts:
     plugins:

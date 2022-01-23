@@ -1,79 +1,38 @@
 import { createServer } from "graphql-yoga";
+import { loadSchemaSync } from "@graphql-tools/load";
+import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
 import * as currencyFormatter from "currency-formatter";
 
-import { Resolvers } from "./types";
+import type { Resolvers } from "./types";
+import type { CartModel, CartItemModel } from "./model";
 
-export const schema = /* GraphQL */ `
-  type Query {
-    cart(id: ID!): Cart!
-  }
+import { CurrencyCode } from "./model";
 
-  type Cart {
-    id: ID!
-    totalItems: Int!
-    items: [CartItem!]!
-    subTotal: Money!
-  }
+const typeDefs = loadSchemaSync("schema.graphql", {
+  loaders: [new GraphQLFileLoader()],
+});
 
-  type CartItem {
-    id: ID!
-    name: String!
-    quantity: Int!
-    unitTotal: Money!
-    lineTotal: Money!
-  }
-
-  type Money {
-    amount: Int!
-    formatted: String!
-  }
-
-  enum Currency {
-    USD
-    GBP
-    TRY
-  }
-`;
-
-export enum CurrencyCode {
-  USD = "USD",
-  GBP = "GBP",
-  TRY = "TRY",
-}
-
-export type CartModel = {
-  _id: string;
-  items: CartItemModel[];
-  currency: CurrencyCode;
-};
-
-export type CartItemModel = {
-  _id: string;
-  name: string;
-  quantity: number;
-  currency: CurrencyCode;
-  price: number;
-};
+const CART_ITEMS: CartItemModel[] = [
+  {
+    _id: "1",
+    name: "T-Shirt",
+    quantity: 3,
+    price: 1000,
+    currency: CurrencyCode.USD,
+  },
+  {
+    _id: "2",
+    name: "Stickers",
+    quantity: 1,
+    price: 500,
+    currency: CurrencyCode.USD,
+  },
+];
 
 const CARTS: CartModel[] = [
   {
     _id: "wtf",
-    items: [
-      {
-        _id: "1",
-        name: "T-Shirt",
-        quantity: 3,
-        price: 1000,
-        currency: CurrencyCode.USD,
-      },
-      {
-        _id: "2",
-        name: "Stickers",
-        quantity: 1,
-        price: 500,
-        currency: CurrencyCode.USD,
-      },
-    ],
+    items: CART_ITEMS,
     currency: CurrencyCode.USD,
   },
 ];
@@ -132,7 +91,7 @@ const resolvers: Resolvers = {
 };
 
 const server = createServer({
-  typeDefs: schema,
+  typeDefs,
   resolvers,
 });
 
