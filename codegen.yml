@@ -1,0 +1,12 @@
+schema: index.ts
+generates:
+  types.ts:
+    plugins:
+      - "@graphql-codegen/typescript"
+      - "@graphql-codegen/typescript-resolvers"
+    config:
+      mappers:
+        Cart: ./index#CartModel
+        CartItem: ./index#CartItemModel
+      enumValues:
+        Currency: ./index#CurrencyCode
