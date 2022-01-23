@@ -1,0 +1,29 @@
+type Query {
+  cart(id: ID!): Cart!
+}
+
+type Cart {
+  id: ID!
+  totalItems: Int!
+  items: [CartItem!]!
+  subTotal: Money!
+}
+
+type CartItem {
+  id: ID!
+  name: String!
+  quantity: Int!
+  unitTotal: Money!
+  lineTotal: Money!
+}
+
+type Money {
+  amount: Int!
+  formatted: String!
+}
+
+enum Currency {
+  USD
+  GBP
+  TRY
+}
